@@ -7,6 +7,7 @@ const scrap = async (browser: any, url: string): Promise<Episode> => {
   const page = await browser.newPage();
   await page.goto(url, {
     waitUntil: "domcontentloaded",
+    timeout: 0,
   });
 
   const html = await page.content();

@@ -6,6 +6,7 @@ const scrapHomePage = async (browser: any): Promise<any[]> => {
   const pageUrl = encodeURI(`${config.PAGE_URL}`);
   await page.goto(pageUrl, {
     waitUntil: "domcontentloaded",
+    timeout: 0,
   });
 
   const html = await page.content();

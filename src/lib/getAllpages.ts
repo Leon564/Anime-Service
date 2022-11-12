@@ -19,7 +19,7 @@ const getAllPages = async (browser: any): Promise<any> => {
     if (!existsSync(FILE_PATH)) {
       const page = await browser.newPage();
       const pageUrl = encodeURI(`${config.PAGE_URL}/browse`);
-      await page.goto(pageUrl, { waitUntil: "domcontentloaded" });
+      await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 0 });
       const html = await page.content();
       const $ = load(html);
       const pagesFound = parseInt($("ul.pagination li").last().prev().text());
