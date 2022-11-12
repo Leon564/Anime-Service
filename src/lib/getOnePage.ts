@@ -17,7 +17,7 @@ const getOnePage = async (
       const animeData = await scrapAnime(browser, anime.url);
       if (verificarDatabase) {
         const exist = await getAnimeById(animeData?.anime?.id!);
-        if (exist) {
+        if (exist.length > 0) {
           logger.info(`anime ${animeData?.anime?.title} already exist`);
           if (i === results.length - 1) return resolve(true);
 

@@ -3,7 +3,7 @@ import Episode from "../types/episode.type";
 import db from "./firebase";
 import snapshotToArray from "../utils/snapshotToArray";
 
-const saveAnime = async (anime: Anime) => {  
+const saveAnime = async (anime: Anime) => {
   const key = db.ref("animes").push(anime).key;
   db.ref("animes/lenght").transaction((count: number) => {
     return count + 1;
@@ -14,6 +14,9 @@ const saveAnime = async (anime: Anime) => {
 
 const saveEpisode = async (episode: Episode, animeKey: string) => {
   const key = db.ref(`animes/${animeKey}`).child("episodes").push(episode).key;
+  db.ref(`animes/${animeKey}/episodes/lenght`).transaction((count: number) => {
+    return count + 1;
+  });
   db.ref("animes/lastUpdate").set(Date.now());
   db.ref(`animes/${animeKey}/updated`).set(Date.now());
   return key;
