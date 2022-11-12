@@ -1,0 +1,18 @@
+#logs
+/logs
+yarn-error.log
+
+#node_modules
+node_modules
+
+#env files
+.env
+
+#files generated on execution
+src/data/AllScrapProgress.json
+src/data/episodes.json
+src/data/Scrap_Complete.json.json
+
+#database files
+src/db/animedeus-v2-firebase-adminsdk-gx4kk-9b9ed44366.json
+
