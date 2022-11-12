@@ -19,6 +19,7 @@ type Anime = {
   views: number;
   date: number;
   updated: number;
+  visible:boolean;
 };
 
 export default Anime;

@@ -66,6 +66,7 @@ const scrap = async (
   anime.views = 0;
   anime.date = Date.now();
   anime.updated = Date.now();
+  anime.visible = true;
   const scripts = $("script")
     .toArray()
     .find((el: any) => {

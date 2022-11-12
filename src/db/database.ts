@@ -8,11 +8,13 @@ const saveAnime = async (anime: Anime) => {
   db.ref("animes/lenght").transaction((count: number) => {
     return count + 1;
   });
+  db.ref("animes/lastUpdate").set(Date.now());
   return key;
 };
 
 const saveEpisode = async (episode: Episode, animeKey: string) => {
   const key = db.ref(`animes/${animeKey}`).child("episodes").push(episode).key;
+  db.ref("animes/lastUpdate").set(Date.now());
   return key;
 };
 
