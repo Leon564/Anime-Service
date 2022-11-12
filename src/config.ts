@@ -12,6 +12,7 @@ export default {
 
     const browser = await puppeteer.launch({
       headless: true,
+      ignoreDefaultArgs: ["--disable-extensions"],
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
