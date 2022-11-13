@@ -3,8 +3,8 @@ import { upperCaseFirst } from "../utils/upperCaseFirst.utils";
 import Episode from "../types/episode.type";
 import Server from "../types/server.type";
 
-const scrap = async (browser: any, url: string): Promise<Episode> => {
-  const page = await browser.newPage();
+const scrap = async (page: any, url: string): Promise<Episode> => {
+
   await page.goto(url, {
     waitUntil: "domcontentloaded",
     timeout: 0,
@@ -29,8 +29,6 @@ const scrap = async (browser: any, url: string): Promise<Episode> => {
       };
     })
     .get();
-
-  page.close();
 
   return {
     episode,

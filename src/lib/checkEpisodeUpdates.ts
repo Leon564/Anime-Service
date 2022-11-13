@@ -4,8 +4,8 @@ import { join } from "path";
 import logger from "../utils/logger.utils";
 const FILE_PATH = join(__dirname, "..", "data", "episodes.json");
 
-const checkEpisodeUpdates = async (browser: any): Promise<any[]> => {
-  const animes = await scrapHomePage(browser);
+const checkEpisodeUpdates = async (page: any): Promise<any[]> => {
+  const animes = await scrapHomePage(page);
   if (existsSync(FILE_PATH)) {
     const episodes = JSON.parse(readFileSync(FILE_PATH, "utf-8"));
     if (JSON.stringify(episodes) === JSON.stringify(animes)) {

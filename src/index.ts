@@ -5,13 +5,13 @@ const args = process.argv.join(" ");
 
 const main = async () => {
   const browser = await config.browser();
+  const page = await browser.newPage();
   if (args.toLowerCase().includes("allscraping")) {
-    getAllPages(browser).then(() => {
-      browser.close();
+    getAllPages(page).then(() => {
       process.exit(0);
     });
   } else {
-    updateService(browser);
+    updateService(page);
   }
 };
 

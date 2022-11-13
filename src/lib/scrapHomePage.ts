@@ -1,8 +1,7 @@
 import { load } from "cheerio";
 import config from "../config";
 
-const scrapHomePage = async (browser: any): Promise<any[]> => {
-  const page = await browser.newPage();
+const scrapHomePage = async (page: any): Promise<any[]> => {
   const pageUrl = encodeURI(`${config.PAGE_URL}`);
   await page.goto(pageUrl, {
     waitUntil: "domcontentloaded",
@@ -32,7 +31,6 @@ const scrapHomePage = async (browser: any): Promise<any[]> => {
     .get()
     .reverse();
 
-  page.close();
   return animeList;
 };
 

@@ -10,14 +10,14 @@ import logger from "../utils/logger.utils";
 import config from "../config";
 
 const getEpisode = async (
-  browser: any,
+  page: any,
   Anime: string,
   Episode: string
 ): Promise<any> => {
   const anime = await getAnimeById(Anime);
   if (anime.length === 0) {
     const animeData = await scrapAnime(
-      browser,
+      page,
       `${config.PAGE_URL}/anime/${Anime}`
     );
     const animeKey = await saveAnime(animeData?.anime!);
@@ -25,7 +25,7 @@ const getEpisode = async (
     for (const { episode, j } of animeData?.episodesList.map(
       (episode: any, j: any) => ({ episode, j })
     )) {
-      const episodeData = await scrapEpisode(browser, episode);
+      const episodeData = await scrapEpisode(page, episode);
       await saveEpisode(episodeData, animeKey!);
       logger.info(`episode ${episodeData.episode} saved`);
       if (j === animeData?.episodesList.length - 1) {
@@ -37,7 +37,7 @@ const getEpisode = async (
   const episode = await getEpisodeById(Anime, parseInt(Episode));
   if (episode) return;
   const episodeData = await scrapEpisode(
-    browser,
+    page,
     `${config.PAGE_URL}/ver/${Episode}`
   );
   await saveEpisode(episodeData, anime[0].key);

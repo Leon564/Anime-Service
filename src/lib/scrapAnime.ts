@@ -4,10 +4,9 @@ import removeAccents from "../utils/removeAccents";
 import config from "../config";
 
 const scrap = async (
-  browser: any,
+  page: any,
   url: string
 ): Promise<{ anime: Anime; episodesList: [] | any } | null> => {
-  const page = await browser.newPage();
   await page.goto(url, {
     waitUntil: "domcontentloaded",
     timeout: 0,
@@ -83,7 +82,6 @@ const scrap = async (
   const episodesList = JSON.parse(epsList).map((e: any) => {
     return `${config.PAGE_URL}/ver/${anime.id}-${e.toString().split(",")[0]}`;
   });
-  page.close();
   if (!anime.title || anime.title == "") return null;
   return { anime, episodesList };
 };

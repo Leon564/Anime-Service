@@ -5,16 +5,16 @@ import { saveAnime, saveEpisode, getAnimeById } from "../db/database";
 import logger from "../utils/logger.utils";
 
 const getOnePage = async (
-  browser: any,
+  page: any,
   pageNumber: number | string,
   verificarDatabase?: boolean
 ): Promise<boolean | string> => {
-  const results = await scrapDirectory(browser, pageNumber);
+  const results = await scrapDirectory(page, pageNumber);
 
   if (results.length === 0) return "not found animes in this page";
   return new Promise(async (resolve, reject) => {
     for (const { anime, i } of results.map((anime, i) => ({ anime, i }))) {
-      const animeData = await scrapAnime(browser, anime.url);
+      const animeData = await scrapAnime(page, anime.url);
       if (verificarDatabase) {
         const exist = await getAnimeById(animeData?.anime?.id!);
         if (exist.length > 0) {
@@ -31,7 +31,7 @@ const getOnePage = async (
       for (const { episode, j } of animeData.episodesList.map(
         (episode: any, j: any) => ({ episode, j })
       )) {
-        const episodeData = await scrapEpisode(browser, episode);
+        const episodeData = await scrapEpisode(page, episode);
         await saveEpisode(episodeData, animeKey!);
 
         if (
