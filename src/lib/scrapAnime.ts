@@ -45,6 +45,17 @@ const scrap = async (
   anime.cover = `${config.PAGE_URL}${$("div.AnimeCover div figure img").attr(
     "src"
   )!}`;
+
+  anime.related = <any[]>[];
+
+  $("ul.ListAnmRel li").each((i, el) => {
+      const id = $(el).find("a").attr("href")?.split("/").pop();
+      const title = $(el).find("a").text();
+      const type =$(el).text().split('(')[1].split(')')[0];
+      const visible= true;
+      anime.related.push({id,title,type,visible});
+  });
+  
   anime.banner = `${config.PAGE_URL}${$("div.Bg")
     .attr("style")
     ?.split("(")[1]

@@ -15,6 +15,7 @@ type Anime = {
   genres: any[];
   lowerGenres: any[];
   sinopsis: string;
+  related: any[];
   episodes: Episode[];
   views: number;
   date: number;
