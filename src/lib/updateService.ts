@@ -3,7 +3,7 @@ import logger from "../utils/logger.utils";
 import checkEpisodeUpdates from "./checkEpisodeUpdates";
 import getEpisode from "./getEpisode";
 
-const updateService = async (page: any): Promise<void> => {
+const updateService = async (page: any, database:any): Promise<void> => {
   logger.info("update service started");
 
   const task = cron.schedule("*/5 * * * *", async () => {
@@ -13,7 +13,7 @@ const updateService = async (page: any): Promise<void> => {
     if (episodes.length > 0) {
       logger.info("New episodes found");
       for (const { animeId, episode } of episodes) {
-        await getEpisode(page, animeId, episode);
+        await getEpisode(page, animeId, episode, database);
       }
     }
   });

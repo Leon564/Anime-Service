@@ -1,13 +1,14 @@
 import scrapDirectory from "./scrapDirectory";
 import scrapAnime from "./scrapAnime";
 import scrapEpisode from "./scrapEpisode";
-import { saveAnime, saveEpisode, getAnimeById } from "../db/database";
 import logger from "../utils/logger.utils";
 
 const getOnePage = async (
   page: any,
   pageNumber: number | string,
-  verificarDatabase?: boolean
+  database: any,
+  verificarDatabase?: boolean,
+  
 ): Promise<boolean | string> => {
   const results = await scrapDirectory(page, pageNumber);
 
@@ -16,7 +17,7 @@ const getOnePage = async (
     for (const { anime, i } of results.map((anime, i) => ({ anime, i }))) {
       const animeData = await scrapAnime(page, anime.url);
       if (verificarDatabase) {
-        const exist = await getAnimeById(animeData?.anime?.id!);
+        const exist = await database.getAnimeById(animeData?.anime?.id!);
         if (exist.length > 0) {
           logger.info(`anime ${animeData?.anime?.title} already exist`);
           if (i === results.length - 1) return resolve(true);
@@ -25,14 +26,14 @@ const getOnePage = async (
         }
       }
       if (!animeData) return resolve(false);
-      const animeKey = await saveAnime(animeData.anime);
+      const animeKey = await database.saveAnime(animeData.anime);
       logger.info(`anime ${anime.name} saved`);
 
       for (const { episode, j } of animeData.episodesList.map(
         (episode: any, j: any) => ({ episode, j })
       )) {
         const episodeData = await scrapEpisode(page, episode);
-        await saveEpisode(episodeData, animeKey!);
+        await database.saveEpisode(episodeData, animeKey!);
 
         if (
           i === results.length - 1 &&

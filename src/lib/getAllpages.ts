@@ -7,7 +7,7 @@ import config from "../config";
 const FILE_PATH = join(__dirname, "..", "data", "AllScrapProgress.json");
 const FinishFile = join(__dirname, "..", "data", "Scrap_Complete.json");
 
-const getAllPages = async (page: any): Promise<any> => {
+const getAllPages = async (page: any, database:any): Promise<any> => {
   if (existsSync(FinishFile)) {
     logger.info("Scraping is already complete");
     logger.info(
@@ -17,25 +17,22 @@ const getAllPages = async (page: any): Promise<any> => {
   }
   try {
     if (!existsSync(FILE_PATH)) {
-      //const page = await browser.newPage();
       const pageUrl = encodeURI(`${config.PAGE_URL}/browse`);
       await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 0 });
       const html = await page.content();
       const $ = load(html);
       const pagesFound = parseInt($("ul.pagination li").last().prev().text());
-      writeFileSync(FILE_PATH, JSON.stringify({ pages: pagesFound }));
-      //page.close();
+      writeFileSync(FILE_PATH, JSON.stringify({ pages: pagesFound }));   
     }
 
     let pages = JSON.parse(readFileSync(FILE_PATH).toString()).pages;
     if (pages === 0) return [];
 
     let verif = true;
-    //cicle through all pages in reverse order
     return new Promise(async (resolve, reject) => {
       for (let i = pages; i > 0; i--) {
         logger.info(`Scraping page ${i} of ${pages}`);
-        await getOnePage(page, i, verif);
+        await getOnePage(page, i, database, verif);
         verif = false;
         writeFileSync(FILE_PATH, JSON.stringify({ pages: i - 1 }));
         if (i === 1) {

@@ -69,6 +69,10 @@ const getEpisodeById = async (animeKey: string, episode: number) => {
   return result[0];
 };
 
+const clearDatabase = async () => {
+  await db.ref("animes").remove();
+};
+
 export {
   saveAnime,
   saveEpisode,
@@ -76,4 +80,5 @@ export {
   getAnimeById,
   getAnimeByGenre,
   getEpisodeById,
+  clearDatabase,
 };

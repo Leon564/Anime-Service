@@ -1,17 +1,21 @@
 import config from "./config";
 import getAllPages from "./lib/getAllpages";
 import updateService from "./lib/updateService";
+import logger from "./utils/logger.utils";
 const args = process.argv.join(" ");
 
 const main = async () => {
   const browser = await config.browser();
   const page = await browser.newPage();
+  const database = config.database;
+
   if (args.toLowerCase().includes("allscraping")) {
-    getAllPages(page).then(() => {
+    logger.info("All scraping started");
+    getAllPages(page, database).then(() => {
       process.exit(0);
     });
   } else {
-    updateService(page);
+    updateService(page, database);
   }
 };
 

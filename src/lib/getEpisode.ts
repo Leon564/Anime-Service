@@ -1,9 +1,3 @@
-import {
-  saveEpisode,
-  getEpisodeById,
-  getAnimeById,
-  saveAnime,
-} from "../db/database";
 import scrapEpisode from "./scrapEpisode";
 import scrapAnime from "./scrapAnime";
 import logger from "../utils/logger.utils";
@@ -12,21 +6,22 @@ import config from "../config";
 const getEpisode = async (
   page: any,
   Anime: string,
-  Episode: string
+  Episode: string,
+  database: any
 ): Promise<any> => {
-  const anime = await getAnimeById(Anime);
+  const anime = await database.getAnimeById(Anime);
   if (anime.length === 0) {
     const animeData = await scrapAnime(
       page,
       `${config.PAGE_URL}/anime/${Anime}`
     );
-    const animeKey = await saveAnime(animeData?.anime!);
+    const animeKey = await database.saveAnime(animeData?.anime!);
     logger.info(`anime ${animeData?.anime?.title} saved`);
     for (const { episode, j } of animeData?.episodesList.map(
       (episode: any, j: any) => ({ episode, j })
     )) {
       const episodeData = await scrapEpisode(page, episode);
-      await saveEpisode(episodeData, animeKey!);
+      await database.saveEpisode(episodeData, animeKey!);
       logger.info(`episode ${episodeData.episode} saved`);
       if (j === animeData?.episodesList.length - 1) {
         logger.info(`anime ${animeData?.anime?.title} saved`);
@@ -34,13 +29,13 @@ const getEpisode = async (
       }
     }
   }
-  const episode = await getEpisodeById(Anime, parseInt(Episode));
+  const episode = await database.getEpisodeById(Anime, parseInt(Episode));
   if (episode) return;
   const episodeData = await scrapEpisode(
     page,
     `${config.PAGE_URL}/ver/${Episode}`
   );
-  await saveEpisode(episodeData, anime[0].key);
+  await database.saveEpisode(episodeData, anime[0].key);
   logger.info(`episode ${episodeData.episode} saved`);
   return;
 };
