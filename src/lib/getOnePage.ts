@@ -2,6 +2,7 @@ import scrapDirectory from "./scrapDirectory";
 import scrapAnime from "./scrapAnime";
 import scrapEpisode from "./scrapEpisode";
 import logger from "../utils/logger.utils";
+import sleep from "../utils/sleep.utils";
 
 const getOnePage = async (
   page: any,
@@ -42,7 +43,9 @@ const getOnePage = async (
           logger.info(`page ${pageNumber} saved`);
           return resolve(true);
         }
+        sleep(500);
       }
+      sleep(1000);
     }
   });
 };

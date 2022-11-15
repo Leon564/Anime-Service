@@ -6,7 +6,8 @@ const args = process.argv.join(" ");
 
 const main = async () => {
   const browser = await config.browser();
-  const page = await browser.newPage();
+  const context = await browser.createIncognitoBrowserContext();
+  const page = await context.newPage();
   const database = config.database;
 
   if (args.toLowerCase().includes("allscraping")) {
