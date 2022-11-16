@@ -69,6 +69,22 @@ const getEpisodeById = async (animeKey: string, episode: number) => {
   return result[0];
 };
 
+const deleteLastAnime = async () => {
+  const anime = await db
+    .ref("animes")
+    .orderByChild("updated")
+    .limitToLast(1)
+    .once("value");
+  const animeArray = await snapshotToArray(anime);
+  if (animeArray.length === 0) return;
+  const key = animeArray[0].key;
+  await db.ref(`animes/${key}`).remove();
+  db.ref("animes/lenght").transaction((count: number) => {
+    return count - 1;
+  });
+  db.ref("animes/lastUpdate").set(Date.now());
+};
+
 const clearDatabase = async () => {
   await db.ref("animes").remove();
 };
@@ -81,4 +97,5 @@ export {
   getAnimeByGenre,
   getEpisodeById,
   clearDatabase,
+  deleteLastAnime,
 };

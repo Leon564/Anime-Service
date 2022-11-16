@@ -2,7 +2,7 @@ import scrapDirectory from "./scrapDirectory";
 import scrapAnime from "./scrapAnime";
 import scrapEpisode from "./scrapEpisode";
 import logger from "../utils/logger.utils";
-import sleep from "../utils/sleep.utils";
+//import sleep from "../utils/sleep.utils";
 
 const getOnePage = async (
   page: any,
@@ -35,7 +35,7 @@ const getOnePage = async (
       )) {
         const episodeData = await scrapEpisode(page, episode);
         await database.saveEpisode(episodeData, animeKey!);
-
+        logger.info(`${anime.name} episode ${episodeData.episode} saved`);
         if (
           i === results.length - 1 &&
           j === animeData.episodesList.length - 1
@@ -43,9 +43,9 @@ const getOnePage = async (
           logger.info(`page ${pageNumber} saved`);
           return resolve(true);
         }
-        sleep(500);
+        //sleep(500);
       }
-      sleep(1000);
+      //sleep(1000);
     }
   });
 };

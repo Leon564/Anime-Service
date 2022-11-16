@@ -2,7 +2,7 @@ import scrapEpisode from "./scrapEpisode";
 import scrapAnime from "./scrapAnime";
 import logger from "../utils/logger.utils";
 import config from "../config";
-import sleep from "../utils/sleep.utils";
+//import sleep from "../utils/sleep.utils";
 
 const getEpisode = async (
   page: any,
@@ -28,7 +28,7 @@ const getEpisode = async (
         logger.info(`anime ${animeData?.anime?.title} saved`);
         return;
       }
-      sleep(1000);
+      //sleep(1000);
     }
   }
   const episode = await database.getEpisodeById(Anime, parseInt(Episode));

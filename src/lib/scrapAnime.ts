@@ -70,7 +70,7 @@ const scrap = async (
 
   anime.lowerGenres = <any[]>[];
   genres.each((i, el) => {
-    anime.lowerGenres[<any>removeAccents($(el).text())] = true;
+    anime.lowerGenres[<any>removeAccents($(el).text()).toLocaleLowerCase()] = true;
   });
 
   anime.sinopsis = $("div.Description p").text();
