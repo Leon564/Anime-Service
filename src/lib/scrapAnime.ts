@@ -17,7 +17,7 @@ const scrap = async (
 
   const anime: Anime = <Anime>{};
 
-  anime.id = page.url().split("/").pop()!;
+  anime.animeId = page.url().split("/").pop()!;
   anime.title = $("h1.Title").text();
   anime.lowerTitle = anime.title.toLowerCase();
   anime.AlternativeTitles = <any[]>[];
@@ -91,7 +91,7 @@ const scrap = async (
     .slice(0, -1);
 
   const episodesList = JSON.parse(epsList).map((e: any) => {
-    return `${config.PAGE_URL}/ver/${anime.id}-${e.toString().split(",")[0]}`;
+    return `${config.PAGE_URL}/ver/${anime.animeId}-${e.toString().split(",")[0]}`;
   });
   if (!anime.title || anime.title == "") return null;
   return { anime, episodesList };

@@ -16,7 +16,10 @@ const getEpisode = async (
       page,
       `${config.PAGE_URL}/anime/${Anime}`
     );
-    const animeKey = await database.saveAnime(animeData?.anime!);
+    const LastAnime = await database.getLastAnime();
+    const id = LastAnime ? LastAnime.id+1 : 0;
+
+    const animeKey = await database.saveAnime({...animeData?.anime!, id});
     logger.info(`anime ${animeData?.anime?.title} saved`);
     for (const { episode, j } of animeData?.episodesList.map(
       (episode: any, j: any) => ({ episode, j })

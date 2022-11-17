@@ -18,7 +18,7 @@ const getOnePage = async (
     for (const { anime, i } of results.map((anime, i) => ({ anime, i }))) {
       const animeData = await scrapAnime(page, anime.url);
       if (verificarDatabase) {
-        const exist = await database.getAnimeById(animeData?.anime?.id!);
+        const exist = await database.getAnimeById(animeData?.anime?.animeId!);
         if (exist.length > 0) {
           logger.info(`anime ${animeData?.anime?.title} already exist`);
           if (i === results.length - 1) return resolve(true);
@@ -27,7 +27,10 @@ const getOnePage = async (
         }
       }
       if (!animeData) return resolve(false);
-      const animeKey = await database.saveAnime(animeData.anime);
+      const LastAnime = await database.getLastAnime();
+      const id = LastAnime ? LastAnime.id+1 : 0;
+
+      const animeKey = await database.saveAnime({...animeData.anime, id});
       logger.info(`anime ${anime.name} saved`);
 
       for (const { episode, j } of animeData.episodesList.map(

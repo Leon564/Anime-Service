@@ -5,7 +5,7 @@ import snapshotToArray from "../utils/snapshotToArray";
 
 const saveAnime = async (anime: Anime) => {
   const key = db.ref("animes").push(anime).key;
-  db.ref("animes/lenght").transaction((count: number) => {
+  db.ref("animes/length").transaction((count: number) => {
     return count + 1;
   });
   db.ref("animes/lastUpdate").set(Date.now());
@@ -14,7 +14,7 @@ const saveAnime = async (anime: Anime) => {
 
 const saveEpisode = async (episode: Episode, animeKey: string) => {
   const key = db.ref(`animes/${animeKey}`).child("episodes").push(episode).key;
-  db.ref(`animes/${animeKey}/episodes/lenght`).transaction((count: number) => {
+  db.ref(`animes/${animeKey}/episodes/length`).transaction((count: number) => {
     return count + 1;
   });
   db.ref("animes/lastUpdate").set(Date.now());
@@ -38,7 +38,7 @@ const getAnimeByTitle = async (title: string) => {
 const getAnimeById = async (id: string) => {
   const anime = await db
     .ref(`animes`)
-    .orderByChild("id")
+    .orderByChild("animeId")
     .equalTo(id)
     .once("value");
   return await snapshotToArray(anime);
@@ -79,10 +79,17 @@ const deleteLastAnime = async () => {
   if (animeArray.length === 0) return;
   const key = animeArray[0].key;
   await db.ref(`animes/${key}`).remove();
-  db.ref("animes/lenght").transaction((count: number) => {
+  db.ref("animes/length").transaction((count: number) => {
     return count - 1;
   });
   db.ref("animes/lastUpdate").set(Date.now());
+};
+
+const getLastAnime = async () => {
+  const anime = await db.ref("animes").orderByChild("updated").limitToLast(1).once("value");
+  const animeArray = await snapshotToArray(anime);
+  if (animeArray.length === 0) return;
+  return animeArray[0];
 };
 
 const clearDatabase = async () => {
@@ -97,5 +104,6 @@ export {
   getAnimeByGenre,
   getEpisodeById,
   clearDatabase,
+  getLastAnime,
   deleteLastAnime,
 };
