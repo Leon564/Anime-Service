@@ -14,6 +14,7 @@
     "firebase": "^9.13.0",
     "firebase-admin": "^11.2.0",
     "fs": "^0.0.1-security",
+    "languagedetect": "^2.0.0",
     "log4js": "^6.7.0",
     "node-cron": "^3.0.2",
     "path": "^0.12.7",
