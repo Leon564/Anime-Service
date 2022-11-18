@@ -17,10 +17,10 @@ const scrap = async (
 
   const anime: Anime = <Anime>{};
 
-  anime.animeId = page.url().split("/").pop()!;
+  anime.slug = page.url().split("/").pop()!;
   anime.title = $("h1.Title").text();
   anime.lowerTitle = anime.title.toLowerCase();
-  anime.AlternativeTitles = <any[]>[];
+  anime.alternativeTitles = <any[]>[];
   anime.lowerAlternativeTitles = <any[]>[];
   const AlternativeTitles = $("span.TxtAlt");
 
@@ -34,7 +34,7 @@ const scrap = async (
 
     anime.lowerAlternativeTitles[<any>titleAlt] = true;
   });
-  anime.AlternativeTitles = AlternativeTitles.map((i, el) => {
+  anime.alternativeTitles = AlternativeTitles.map((i, el) => {
     return $(el).text();
   }).get();
 
@@ -91,7 +91,7 @@ const scrap = async (
     .slice(0, -1);
 
   const episodesList = JSON.parse(epsList).map((e: any) => {
-    return `${config.PAGE_URL}/ver/${anime.animeId}-${e.toString().split(",")[0]}`;
+    return `${config.PAGE_URL}/ver/${anime.slug}-${e.toString().split(",")[0]}`;
   });
   if (!anime.title || anime.title == "") return null;
   return { anime, episodesList };

@@ -38,7 +38,7 @@ const getAnimeByTitle = async (title: string) => {
 const getAnimeById = async (id: string) => {
   const anime = await db
     .ref(`animes`)
-    .orderByChild("animeId")
+    .orderByChild("slug")
     .equalTo(id)
     .once("value");
   return await snapshotToArray(anime);

@@ -12,8 +12,8 @@ const updateService = async (page: any, database:any): Promise<void> => {
     const episodes = await checkEpisodeUpdates(page);
     if (episodes.length > 0) {
       logger.info("New episodes found");
-      for (const { animeId, episode } of episodes) {
-        await getEpisode(page, animeId, episode, database);
+      for (const { slug, episode } of episodes) {
+        await getEpisode(page, slug, episode, database);
       }
     }
   });

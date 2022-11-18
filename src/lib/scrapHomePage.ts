@@ -17,14 +17,14 @@ const scrapHomePage = async (page: any): Promise<any[]> => {
       const url = `${config.PAGE_URL}${href}`;
       const id = href?.split("/")[2];
       const episode = id?.split("-").pop();
-      const animeId = id?.split("-")?.slice(0, -1).join("-");
+      const slug = id?.split("-")?.slice(0, -1).join("-");
       const name = $(el).find("strong.Title").text();
       if (name)
         return {
           name,
           id,
           episode,
-          animeId,
+          slug,
           url,
         };
     })

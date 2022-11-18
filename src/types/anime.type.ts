@@ -2,10 +2,10 @@ import Episode from "./episode.type";
 
 type Anime = {
   id: number;
-  animeId: String;
+  slug: string;
   title: string;
   lowerTitle: string;
-  AlternativeTitles: any[];
+  alternativeTitles: any[];
   lowerAlternativeTitles: any[];
   type: string;
   status: string;
