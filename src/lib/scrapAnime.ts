@@ -2,6 +2,7 @@ import { load } from "cheerio";
 import Anime from "../types/anime.type";
 import removeAccents from "../utils/removeAccents";
 import config from "../config";
+import jikanMoe from "./jikanMoe";
 
 const scrap = async (
   page: any,
@@ -94,6 +95,16 @@ const scrap = async (
     return `${config.PAGE_URL}/ver/${anime.slug}-${e.toString().split(",")[0]}`;
   });
   if (!anime.title || anime.title == "") return null;
+  const animeInfo = await jikanMoe.getAnimeInfo(anime.title);
+  if(animeInfo){
+    anime.mal_id = animeInfo.mal_id;
+    anime.aired = animeInfo.aired;
+    anime.year = animeInfo.year;
+    anime.duration = animeInfo.duration;
+    anime.trailer = animeInfo.trailer;
+    anime.images = animeInfo.images;
+  }
+
   return { anime, episodesList };
 };
 

@@ -2,6 +2,7 @@ import Episode from "./episode.type";
 
 type Anime = {
   id: number;
+  mal_id: number;
   slug: string;
   title: string;
   lowerTitle: string;
@@ -9,6 +10,11 @@ type Anime = {
   lowerAlternativeTitles: any[];
   type: string;
   status: string;
+  aired: any[] | null;
+  year: number;
+  duration: string; 
+  trailer: any;
+  images: any; 
   rating: string;
   votes: number;
   cover: string;
