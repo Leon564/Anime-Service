@@ -3,11 +3,10 @@ import { executablePath } from "puppeteer";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import "dotenv/config";
-import * as db from "./db/database";
 
 export default {
-  PAGE_URL: process.env.PAGE_URL,
-  database: db,
+  PAGE_URL: process.env.PAGE_URL,  
+  apiUrl: process.env.API_URL,
   browser: async () => {
     puppeteer.use(StealthPlugin());
     puppeteer.use(AdblockerPlugin({ blockTrackers: true }));

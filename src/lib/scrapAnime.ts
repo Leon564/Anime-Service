@@ -20,11 +20,12 @@ const scrap = async (
 
   anime.slug = page.url().split("/").pop()!;
   anime.title = $("h1.Title").text();
-  anime.lowerTitle = anime.title.toLowerCase();
+  //anime.lowerTitle = anime.title.toLowerCase();
   anime.alternativeTitles = <any[]>[];
-  anime.lowerAlternativeTitles = <any[]>[];
+  //anime.lowerAlternativeTitles = <any[]>[];
   const AlternativeTitles = $("span.TxtAlt");
 
+  /*
   AlternativeTitles.each((i, el) => {
     const titleAlt = removeAccents($(el).text())
       .toLowerCase()
@@ -35,14 +36,17 @@ const scrap = async (
 
     anime.lowerAlternativeTitles[<any>titleAlt] = true;
   });
+  */
   anime.alternativeTitles = AlternativeTitles.map((i, el) => {
     return $(el).text();
   }).get();
 
   anime.type = $("span.Type").text();
+  /*
   anime.status = $("p.AnmStts").text();
   anime.rating = $("span#votes_prmd").text();
   anime.votes = parseInt($("span#votes_nmbr").text());
+  */
   anime.cover = `${config.PAGE_URL}${$("div.AnimeCover div figure img").attr(
     "src"
   )!}`;
@@ -69,16 +73,19 @@ const scrap = async (
     })
     .get();
 
-  anime.lowerGenres = <any[]>[];
+  /*anime.lowerGenres = <any[]>[];
   genres.each((i, el) => {
     anime.lowerGenres[<any>removeAccents($(el).text()).toLocaleLowerCase()] = true;
   });
+  */
 
   anime.sinopsis = $("div.Description p").text();
+  /*
   anime.views = 0;
   anime.date = Date.now();
   anime.updated = Date.now();
   anime.visible = true;
+  */
   const scripts = $("script")
     .toArray()
     .find((el: any) => {
@@ -95,16 +102,7 @@ const scrap = async (
     return `${config.PAGE_URL}/ver/${anime.slug}-${e.toString().split(",")[0]}`;
   });
   if (!anime.title || anime.title == "") return null;
-  const animeInfo = await jikanMoe.getAnimeInfo(anime.title);
-  if(animeInfo){
-    anime.mal_id = animeInfo.mal_id;
-    anime.aired = animeInfo.aired;
-    anime.year = animeInfo.year;
-    anime.duration = animeInfo.duration;
-    anime.trailer = animeInfo.trailer;
-    anime.images = animeInfo.images;
-  }
-
+  
   return { anime, episodesList };
 };
 

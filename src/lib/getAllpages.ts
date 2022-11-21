@@ -4,11 +4,13 @@ import { existsSync, writeFileSync, readFileSync, unlinkSync } from "fs";
 import { join } from "path";
 import logger from "../utils/logger.utils";
 import config from "../config";
+import service from "../services/service";
 //import sleep from "../utils/sleep.utils";
 const FILE_PATH = join(__dirname, "..", "data", "AllScrapProgress.json");
 const FinishFile = join(__dirname, "..", "data", "Scrap_Complete.json");
+const LastAnimeFile = join(__dirname, "..", "data", "LastAnime.json");
 
-const getAllPages = async (page: any, database:any): Promise<any> => {
+const getAllPages = async (page: any): Promise<any> => {
   if (existsSync(FinishFile)) {
     logger.info("Scraping is already complete");
     logger.info(
@@ -23,18 +25,25 @@ const getAllPages = async (page: any, database:any): Promise<any> => {
       const html = await page.content();
       const $ = load(html);
       const pagesFound = parseInt($("ul.pagination li").last().prev().text());
-      writeFileSync(FILE_PATH, JSON.stringify({ pages: pagesFound }));   
+      writeFileSync(FILE_PATH, JSON.stringify({ pages: pagesFound }));
     }
 
-    database.deleteLastAnime();
     let pages = JSON.parse(readFileSync(FILE_PATH).toString()).pages;
     if (pages === 0) return [];
+
+    let lastAnime = "";
+    if (existsSync(LastAnimeFile))
+      lastAnime = JSON.parse(readFileSync(LastAnimeFile).toString()).lastAnime;
+    if (lastAnime !== "") {
+      service.deleteAnime(lastAnime);
+      logger.info(`last anime deleted ${lastAnime}`);
+    }
 
     let verif = true;
     return new Promise(async (resolve, reject) => {
       for (let i = pages; i > 0; i--) {
         logger.info(`Scraping page ${i} of ${pages}`);
-        await getOnePage(page, i, database, verif);
+        await getOnePage(page, i, verif);
         verif = false;
         writeFileSync(FILE_PATH, JSON.stringify({ pages: i - 1 }));
         if (i === 1) {

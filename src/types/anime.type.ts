@@ -1,38 +1,15 @@
 import Episode from "./episode.type";
 
-type aired = {
-  from: string;
-  to: string;
-  prop: { from: any; to: any };
-};
-
-type Anime = {
-  id: number;
-  mal_id: number;
-  slug: string;
-  title: string;
-  lowerTitle: string;
-  alternativeTitles: any[];
-  lowerAlternativeTitles: any[];
-  type: string;
-  status: string;
-  aired: aired | null;
-  year: number;
-  duration: string;
-  trailer: any;
-  images: any;
-  rating: string;
-  votes: number;
+type Anime = {  
+  title: string;  
+  alternativeTitles: any[];  
+  type: string; 
   cover: string;
   banner: string;
-  genres: any[];
-  lowerGenres: any[];
+  genres: any[];  
   sinopsis: string;
+  slug: string;
   related: any[];
-  episodes: Episode[];
-  views: number;
-  date: number;
-  updated: number;
   visible: boolean;
 };
 

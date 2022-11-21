@@ -1,10 +1,8 @@
 import Server from "./server.type";
 type Episode = {
-  id: string;
-  episode: number;
+  episodeNumber: number;
   title: string;
-  subtitle: string;
   servers: Server[];
-  date: number;
+  downloadServers: Server[];
 };
 export default Episode;
