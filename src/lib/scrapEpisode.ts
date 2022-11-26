@@ -20,26 +20,26 @@ const scrap = async (page: any, url: string): Promise<Episode> => {
     .find((el: any) => {
       return el.children[0]?.data?.includes("var videos");
     });
-  if (!scripts) servers = [];
-  const serversScript = $(scripts)
-    .text()
-    .match(/var videos = (.*);/)![0]
-    .split(" = ")[1]
-    .slice(0, -1);
+  if (scripts || $(scripts).text().includes("videos")) {
+    const serversScript = $(scripts)
+      .text()
+      .match(/var videos = (.*);/)![0]
+      .split(" = ")[1]
+      .slice(0, -1);
 
-  const serversList = JSON.parse(serversScript);
-  servers = [];
-  if (serversList.SUB) {
-    servers = serversList.SUB.map((el: any, i: any) => {
-      return {
-        id: i,
-        title: el.title,
-        url: el.url,
-        code: el.code,
-      };
-    });
+    const serversList = JSON.parse(serversScript);
+    servers = [];
+    if (serversList.SUB) {
+      servers = serversList.SUB.map((el: any, i: any) => {
+        return {
+          id: i,
+          title: el.title,
+          url: el.url,
+          code: el.code,
+        };
+      });
+    }
   }
-
   const downloadServers: Server[] = <Server[]>$("div.DwsldCnTbl a")
     .map((i, el) => {
       const link = $(el).attr("href");

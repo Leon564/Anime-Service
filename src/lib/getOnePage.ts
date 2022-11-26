@@ -18,16 +18,19 @@ const getOnePage = async (
   if (results.length === 0) return "not found animes in this page";
   return new Promise(async (resolve, reject) => {
     for (const { anime, i } of results.map((anime, i) => ({ anime, i }))) {
-      const animeData = await scrapAnime(page, anime.url);
+      
+      
       if (verificarDatabase) {
-        const exist = await service.getAnimeBySlug(animeData?.anime?.slug!); //database.getAnimeById(animeData?.anime?.slug!);
+        const exist = await service.getAnimeBySlug(anime?.slug!); //database.getAnimeById(animeData?.anime?.slug!);
         if (exist) {
-          logger.info(`anime ${animeData?.anime?.title} already exist`);
+          logger.info(`anime ${anime?.name} already exist`);
           if (i === results.length - 1) return resolve(true);
 
           continue;
         }
       }
+      
+     const animeData = await scrapAnime(page, anime.url);
       if (!animeData) return resolve(false);
 
       const animeKey = await service.saveAnime(animeData.anime); //database.saveAnime(animeData.anime);
@@ -40,7 +43,9 @@ const getOnePage = async (
         const episodeData = await scrapEpisode(page, episode);
         //await database.saveEpisode(episodeData, animeKey!);
         await service.saveEpisode(episodeData, animeKey!);
-        logger.info(`${anime.name} episode ${episodeData.episodeNumber} saved`);
+        logger.info(
+          `${anime.name} episode ${episodeData.episodeNumber}/${animeData.episodesList.length} saved`
+        );
         if (
           i === results.length - 1 &&
           j === animeData.episodesList.length - 1

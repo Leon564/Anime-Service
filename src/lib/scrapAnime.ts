@@ -52,15 +52,29 @@ const scrap = async (
   )!}`;
 
   anime.related = <any[]>[];
-
+  let _related:any[] = [];
   $("ul.ListAnmRel li").each((i, el) => {
-      const id = $(el).find("a").attr("href")?.split("/").pop();
-      const title = $(el).find("a").text();
-      const type =$(el).text().split('(')[1].split(')')[0];
-      const visible= true;
-      anime.related.push({id,title,type,visible});
+    const slug = $(el).find("a").attr("href")?.split("/").pop();
+    const title = $(el).find("a").text();
+    const type = $(el).text().split("(")[1].split(")")[0];
+    const visible = true;  
+    _related.push({slug,title,type,visible});
   });
-  
+
+  const related = Promise.all(
+    _related.map(async (el) => {
+      const animeInfo = await jikanMoe.getAnimeInfo(el.title);
+      return {
+        slug: el.slug,
+        title: el.title,
+        type: el.type,
+        visible: el.visible,
+        cover: animeInfo?.images?.jpg?.large_image_url,
+      };
+    })
+  )
+  anime.related = await related;
+
   anime.banner = `${config.PAGE_URL}${$("div.Bg")
     .attr("style")
     ?.split("(")[1]
@@ -102,7 +116,7 @@ const scrap = async (
     return `${config.PAGE_URL}/ver/${anime.slug}-${e.toString().split(",")[0]}`;
   });
   if (!anime.title || anime.title == "") return null;
-  
+
   return { anime, episodesList };
 };
 
