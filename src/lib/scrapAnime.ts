@@ -3,7 +3,8 @@ import Anime from "../types/anime.type";
 import removeAccents from "../utils/removeAccents";
 import config from "../config";
 import jikanMoe from "./jikanMoe";
-
+import sleep from "../utils/sleep.utils";
+import uploadImage from "../utils/uploadImage.utils";
 const scrap = async (
   page: any,
   url: string
@@ -47,23 +48,25 @@ const scrap = async (
   anime.rating = $("span#votes_prmd").text();
   anime.votes = parseInt($("span#votes_nmbr").text());
   */
-  anime.cover = `${config.PAGE_URL}${$("div.AnimeCover div figure img").attr(
+  const cover = `${config.PAGE_URL}${$("div.AnimeCover div figure img").attr(
     "src"
   )!}`;
+  anime.cover = await uploadImage(cover);
 
   anime.related = <any[]>[];
-  let _related:any[] = [];
+  let _related: any[] = [];
   $("ul.ListAnmRel li").each((i, el) => {
     const slug = $(el).find("a").attr("href")?.split("/").pop();
     const title = $(el).find("a").text();
     const type = $(el).text().split("(")[1].split(")")[0];
-    const visible = true;  
-    _related.push({slug,title,type,visible});
+    const visible = true;
+    _related.push({ slug, title, type, visible });
   });
 
   const related = Promise.all(
     _related.map(async (el) => {
       const animeInfo = await jikanMoe.getAnimeInfo(el.title);
+      sleep(500);
       return {
         slug: el.slug,
         title: el.title,
@@ -72,13 +75,15 @@ const scrap = async (
         cover: animeInfo?.images?.jpg?.large_image_url,
       };
     })
-  )
+  );
   anime.related = await related;
 
-  anime.banner = `${config.PAGE_URL}${$("div.Bg")
+  const banner = `${config.PAGE_URL}${$("div.Bg")
     .attr("style")
     ?.split("(")[1]
     .split(")")[0]!}`;
+
+  anime.banner = await uploadImage(banner);
 
   const genres = $("nav.Nvgnrs a");
   anime.genres = genres
