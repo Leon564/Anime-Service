@@ -7,7 +7,7 @@ type Anime = {
   cover: string;
   banner: string;
   genres: any[];  
-  sinopsis: string;
+  synopsis: string;
   slug: string;
   related: any[];
   visible: boolean;
