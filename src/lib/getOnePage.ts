@@ -40,7 +40,7 @@ const getOnePage = async (
       for (const { episode, j } of animeData.episodesList
         .reverse()
         .map((episode: any, j: any) => ({ episode, j }))) {
-        const episodeData = await scrapEpisode(page, episode);
+        const episodeData = await scrapEpisode(page, episode, animeData.anime.id);
         //await database.saveEpisode(episodeData, animeKey!);
         await service.saveEpisode(episodeData, animeKey!);
         logger.info(

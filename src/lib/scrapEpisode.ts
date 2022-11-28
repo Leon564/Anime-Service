@@ -2,8 +2,13 @@ import { load } from "cheerio";
 import { upperCaseFirst } from "../utils/upperCaseFirst.utils";
 import Episode from "../types/episode.type";
 import Server from "../types/server.type";
+import uploadImage from "../utils/uploadImage.utils";
 
-const scrap = async (page: any, url: string): Promise<Episode> => {
+const scrap = async (
+  page: any,
+  url: string,
+  animeId: string | number
+): Promise<Episode> => {
   await page.goto(url, {
     waitUntil: "domcontentloaded",
     timeout: 0,
@@ -52,12 +57,15 @@ const scrap = async (page: any, url: string): Promise<Episode> => {
       };
     })
     .get();
-
+  const screenshot = await uploadImage(
+    `https://cdn.animeflv.net/screenshots/${animeId}/${episodeNumber}/th_3.jpg`
+  );
   return {
     episodeNumber,
     title,
     servers,
     downloadServers,
+    screenshot,
   };
 };
 

@@ -4,5 +4,6 @@ type Episode = {
   title: string;
   servers: Server[];
   downloadServers: Server[];
+  screenshot: string;
 };
 export default Episode;

@@ -5,10 +5,14 @@ import config from "../config";
 import jikanMoe from "./jikanMoe";
 import sleep from "../utils/sleep.utils";
 import uploadImage from "../utils/uploadImage.utils";
+
 const scrap = async (
   page: any,
   url: string
-): Promise<{ anime: Anime; episodesList: [] | any } | null> => {
+): Promise<{
+  anime: Anime;
+  episodesList: [] | any;
+} | null> => {
   await page.goto(url, {
     waitUntil: "domcontentloaded",
     timeout: 0,
@@ -98,7 +102,7 @@ const scrap = async (
   });
   */
 
-  anime.sinopsis = $("div.Description p").text();
+  anime.synopsis = $("div.Description p").text();
   /*
   anime.views = 0;
   anime.date = Date.now();
@@ -111,6 +115,15 @@ const scrap = async (
       return el.children[0]?.data?.includes("var episodes");
     });
   if (!scripts) return null;
+
+  const anime_info = $(scripts)
+    .text()
+    .match(/var anime_info = (.*);/)![0]
+    .split(" = ")[1]
+    .slice(0, -1);
+
+  const id = JSON.parse(anime_info)[0];
+  anime.id = id;
   const epsList = $(scripts)
     .text()
     .match(/var episodes = (.*);/)![0]

@@ -2,6 +2,7 @@ import Episode from "./episode.type";
 
 type Anime = {  
   title: string;  
+  id: string;
   alternativeTitles: any[];  
   type: string; 
   cover: string;
