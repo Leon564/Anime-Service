@@ -3,9 +3,8 @@ const imgbb = _imgbb;
 import "dotenv/config";
 import logger from "./logger.utils";
 const defaultImage = "https://i.ibb.co/1Tp6cTn/x1080.jpg";
-const uploadImage = async (image: string) => {
-  logger.info("Uploading image to imgbb...");
-  logger.info("Image URL: " + image);
+const uploadImage = async (image: string) => {  
+  logger.info("Uploading image to imgbb... " + image);
   try {
     const res = await new imgbb(image)
       .setApiKey(process.env.IMGBB_API_KEY)
