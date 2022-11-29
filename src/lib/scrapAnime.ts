@@ -5,6 +5,7 @@ import config from "../config";
 import jikanMoe from "./jikanMoe";
 import sleep from "../utils/sleep.utils";
 import uploadImage from "../utils/uploadImage.utils";
+import logger from "../utils/logger.utils";
 
 const scrap = async (
   page: any,
@@ -67,10 +68,12 @@ const scrap = async (
     _related.push({ slug, title, type, visible });
   });
 
+  /*
   const related = Promise.all(
-    _related.map(async (el) => {
+    _related.map(async (el,i) => {
+      logger.info(`Scraping related anime ${i+1}/${_related.length}`);
       const animeInfo = await jikanMoe.getAnimeInfo(el.title);
-      sleep(500);
+      sleep(1000 * i);
       return {
         slug: el.slug,
         title: el.title,
@@ -80,7 +83,30 @@ const scrap = async (
       };
     })
   );
-  anime.related = await related;
+  */
+
+  const related = new Promise(async(resolve, reject) => {
+    logger.info(`Scraping related anime ${_related.length}`);
+    let _related2: any[] = [];
+    if (_related.length === 0) resolve(_related2);
+    for (let i = 0; i < _related.length; i++) {
+     setTimeout(async () => {
+      const el = _related[i];
+      logger.info(`Scraping related anime ${i + 1}/${_related.length}`);
+      const animeInfo = await jikanMoe.getAnimeInfo(el.title);
+      _related2.push({
+        slug: el.slug,
+        title: el.title,
+        type: el.type,
+        visible: el.visible,
+        cover: animeInfo?.images?.jpg?.large_image_url,
+      });
+      if (i === _related.length - 1) resolve(_related2);
+      }, 1000 * i);
+    };
+  });
+
+  anime.related = <any[]>await related;
 
   const banner = `${config.PAGE_URL}${$("div.Bg")
     .attr("style")
