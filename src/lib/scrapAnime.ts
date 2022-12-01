@@ -61,6 +61,7 @@ const scrap = async (
 
 
 
+  /*
   const related = new Promise(async (resolve, reject) => {
     logger.info(`Scraping related anime ${_related.length}`);
     let _related2: any[] = [];
@@ -76,6 +77,37 @@ const scrap = async (
           type: el.type,
           visible: el.visible,
           cover: animeInfo?.images?.jpg?.large_image_url,
+        });
+        if (i === _related.length - 1) resolve(_related2);
+      }, 1000 * i);
+    }
+  });
+  */
+
+  const related = new Promise(async (resolve, reject) => {
+    logger.info(`Scraping related anime ${_related.length}`);
+    let _related2: any[] = [];
+    if (_related.length === 0) resolve(_related2);
+    for (let i = 0; i < _related.length; i++) {
+      setTimeout(async () => {
+        const el = _related[i];
+        logger.info(`Scraping related anime ${i + 1}/${_related.length}`);
+       await page.goto(`${config.PAGE_URL}/anime/${el.slug}`, {
+          waitUntil: "domcontentloaded",
+          timeout: 0,
+        });
+        const html2 = await page.content();
+        const $$ = load(html2);
+        const cover = `${config.PAGE_URL}${$$("div.AnimeCover div figure img").attr(
+          "src"
+        )!}`;
+
+        _related2.push({
+          slug: el.slug,
+          title: el.title,
+          type: el.type,
+          visible: el.visible,
+          cover: cover, 
         });
         if (i === _related.length - 1) resolve(_related2);
       }, 1000 * i);
