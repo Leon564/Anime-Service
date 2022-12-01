@@ -2,7 +2,7 @@ import { load } from "cheerio";
 import { upperCaseFirst } from "../utils/upperCaseFirst.utils";
 import Episode from "../types/episode.type";
 import Server from "../types/server.type";
-import uploadImage from "../utils/uploadImage.utils";
+//import uploadImage from "../utils/uploadImage.utils";
 
 const scrap = async (
   page: any,
@@ -57,9 +57,13 @@ const scrap = async (
       };
     })
     .get();
-  const screenshot = await uploadImage(
+    const screenshot = `https://cdn.animeflv.net/screenshots/${animeId}/${episodeNumber}/th_3.jpg`;
+    /*
+   = await uploadImage(
     `https://cdn.animeflv.net/screenshots/${animeId}/${episodeNumber}/th_3.jpg`
   );
+  */
+  
   return {
     episodeNumber,
     title,

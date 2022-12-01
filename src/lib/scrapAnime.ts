@@ -1,10 +1,10 @@
 import { load } from "cheerio";
 import Anime from "../types/anime.type";
-import removeAccents from "../utils/removeAccents";
+//import removeAccents from "../utils/removeAccents";
 import config from "../config";
 import jikanMoe from "./jikanMoe";
-import sleep from "../utils/sleep.utils";
-import uploadImage from "../utils/uploadImage.utils";
+//import sleep from "../utils/sleep.utils";
+//import uploadImage from "../utils/uploadImage.utils";
 import logger from "../utils/logger.utils";
 
 const scrap = async (
@@ -26,37 +26,28 @@ const scrap = async (
 
   anime.slug = page.url().split("/").pop()!;
   anime.title = $("h1.Title").text();
-  //anime.lowerTitle = anime.title.toLowerCase();
+
+  anime.language="Subtitled";
+  if (anime.title.toLocaleLowerCase().includes("latino")) {
+    anime.language="Latino";
+  }
+  
   anime.alternativeTitles = <any[]>[];
-  //anime.lowerAlternativeTitles = <any[]>[];
+  
   const AlternativeTitles = $("span.TxtAlt");
+  const extraInfo = await jikanMoe.getAnimeInfo(anime.title);
 
-  /*
-  AlternativeTitles.each((i, el) => {
-    const titleAlt = removeAccents($(el).text())
-      .toLowerCase()
-      .replace(/[^\w\s]/g, "")
-      .replace(/ /g, "%20");
-
-    if (titleAlt === "" || titleAlt === "%20") return;
-
-    anime.lowerAlternativeTitles[<any>titleAlt] = true;
-  });
-  */
   anime.alternativeTitles = AlternativeTitles.map((i, el) => {
     return $(el).text();
   }).get();
 
   anime.type = $("span.Type").text();
-  /*
-  anime.status = $("p.AnmStts").text();
-  anime.rating = $("span#votes_prmd").text();
-  anime.votes = parseInt($("span#votes_nmbr").text());
-  */
+
   const cover = `${config.PAGE_URL}${$("div.AnimeCover div figure img").attr(
     "src"
   )!}`;
-  anime.cover = await uploadImage(cover);
+
+  anime.cover = cover; //await uploadImage(cover,extraInfo?.images?.jpg?.large_image_url, "cover");
 
   anime.related = <any[]>[];
   let _related: any[] = [];
@@ -68,42 +59,27 @@ const scrap = async (
     _related.push({ slug, title, type, visible });
   });
 
-  /*
-  const related = Promise.all(
-    _related.map(async (el,i) => {
-      logger.info(`Scraping related anime ${i+1}/${_related.length}`);
-      const animeInfo = await jikanMoe.getAnimeInfo(el.title);
-      sleep(1000 * i);
-      return {
-        slug: el.slug,
-        title: el.title,
-        type: el.type,
-        visible: el.visible,
-        cover: animeInfo?.images?.jpg?.large_image_url,
-      };
-    })
-  );
-  */
 
-  const related = new Promise(async(resolve, reject) => {
+
+  const related = new Promise(async (resolve, reject) => {
     logger.info(`Scraping related anime ${_related.length}`);
     let _related2: any[] = [];
     if (_related.length === 0) resolve(_related2);
     for (let i = 0; i < _related.length; i++) {
-     setTimeout(async () => {
-      const el = _related[i];
-      logger.info(`Scraping related anime ${i + 1}/${_related.length}`);
-      const animeInfo = await jikanMoe.getAnimeInfo(el.title);
-      _related2.push({
-        slug: el.slug,
-        title: el.title,
-        type: el.type,
-        visible: el.visible,
-        cover: animeInfo?.images?.jpg?.large_image_url,
-      });
-      if (i === _related.length - 1) resolve(_related2);
+      setTimeout(async () => {
+        const el = _related[i];
+        logger.info(`Scraping related anime ${i + 1}/${_related.length}`);
+        const animeInfo = await jikanMoe.getAnimeInfo(el.title);
+        _related2.push({
+          slug: el.slug,
+          title: el.title,
+          type: el.type,
+          visible: el.visible,
+          cover: animeInfo?.images?.jpg?.large_image_url,
+        });
+        if (i === _related.length - 1) resolve(_related2);
       }, 1000 * i);
-    };
+    }
   });
 
   anime.related = <any[]>await related;
@@ -113,8 +89,10 @@ const scrap = async (
     ?.split("(")[1]
     .split(")")[0]!}`;
 
-  anime.banner = await uploadImage(banner);
-
+  anime.banner = banner.includes("banners/3690.jpg")
+    ? extraInfo?.images?.jpg?.large_image_url
+    : banner; //await uploadImage(banner, extraInfo?.images?.jpg?.large_image_url, "banner");
+    if(!anime.banner) anime.banner = 'https://i.ibb.co/55sJ2XR/Banner.png';
   const genres = $("nav.Nvgnrs a");
   anime.genres = genres
     .map((i, el) => {
@@ -122,19 +100,10 @@ const scrap = async (
     })
     .get();
 
-  /*anime.lowerGenres = <any[]>[];
-  genres.each((i, el) => {
-    anime.lowerGenres[<any>removeAccents($(el).text()).toLocaleLowerCase()] = true;
-  });
-  */
+
 
   anime.synopsis = $("div.Description p").text();
-  /*
-  anime.views = 0;
-  anime.date = Date.now();
-  anime.updated = Date.now();
-  anime.visible = true;
-  */
+
   const scripts = $("script")
     .toArray()
     .find((el: any) => {
@@ -142,13 +111,12 @@ const scrap = async (
     });
   if (!scripts) return null;
 
-  const anime_info = $(scripts)
+  let anime_info = $(scripts)
     .text()
     .match(/var anime_info = (.*);/)![0]
-    .split(" = ")[1]
-    .slice(0, -1);
-
-  const id = JSON.parse(anime_info)[0];
+    .split("var anime_info = [")[1].split("];")[0].split(",");
+ 
+  const id = anime_info[0].replace(/"/g, "");
   anime.id = id;
   const epsList = $(scripts)
     .text()
