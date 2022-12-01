@@ -17,3 +17,5 @@ src/data/LastAnime.json
 #database files
 src/db/animedeus-v2-firebase-adminsdk-gx4kk-9b9ed44366.json
 
+#cache files
+.cache

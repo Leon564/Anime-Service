@@ -98,7 +98,7 @@ const scrap = async (
         });
         const html2 = await page.content();
         const $$ = load(html2);
-        const cover = `${config.PAGE_URL}${$$("div.AnimeCover div figure img").attr(
+        const relatedCover = `${config.PAGE_URL}${$$("div.AnimeCover div figure img").attr(
           "src"
         )!}`;
 
@@ -107,7 +107,7 @@ const scrap = async (
           title: el.title,
           type: el.type,
           visible: el.visible,
-          cover: cover, 
+          cover: relatedCover, 
         });
         if (i === _related.length - 1) resolve(_related2);
       }, 1000 * i);
