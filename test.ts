@@ -1,11 +1,14 @@
-import axios from "axios";
-import "dotenv/config";
-import { createReadStream, writeFileSync } from "fs";
-const _imgbb = require("imgbb-uploader");
-const imgbb = _imgbb;
-(async () => {
- const a = `var anime_info = ["89","2x2 = shinobuden","2x2-shinobuden"];`;
+import scrapAnime from "./src/lib/scrapAnime";
+import config from "./src/config";
+import { writeFileSync } from "fs";
 
-  const b = a.split("var anime_info = [")[1].split("];")[0].split(",");
-  console.log(b[0].replace(/"/g, ""));
+(async () => {
+  const browser = await config.browser();
+  const page = await browser.newPage();
+
+  const anime = await scrapAnime(page,"https://www3.animeflv.net/anime/boku-no-hero-academia-6th-season");
+  console.log(anime);
+  console.log(anime?.anime?.related);
+  writeFileSync("anime.json", JSON.stringify(anime, null, 2));
+  browser.close();
 })();
