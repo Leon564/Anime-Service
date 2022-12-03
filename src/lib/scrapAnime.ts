@@ -6,6 +6,7 @@ import jikanMoe from "./jikanMoe";
 //import sleep from "../utils/sleep.utils";
 //import uploadImage from "../utils/uploadImage.utils";
 import logger from "../utils/logger.utils";
+import scrapRelatedAnimes from "./scrapRelatedAnimes";
 
 const scrap = async (
   page: any,
@@ -81,43 +82,10 @@ const scrap = async (
     }
   });
   */
-
-  const related = new Promise(async (resolve, reject) => {
-    logger.info(`Scraping related anime ${_related.length}`);
-    let _related2: any[] = [];
-    if (_related.length === 0) resolve(_related2);
-    for (let i = 0; i < _related.length; i++) {
-      setTimeout(async () => {
-        const el = _related[i];
-        logger.info(`Scraping related anime ${i + 1}/${_related.length}`);
-        page
-          .goto(`${config.PAGE_URL}/anime/${el.slug}`, {
-            waitUntil: "domcontentloaded",
-            timeout: 0,
-          })
-          .then(() => {
-            page.content().then((html2: any) => {
-              const $$ = load(html2);
-              const relatedCover = `${config.PAGE_URL}${$$(
-                "div.AnimeCover div figure img"
-              ).attr("src")!}`;
-
-              _related2.push({
-                slug: el.slug,
-                title: el.title,
-                type: el.type,
-                visible: el.visible,
-                cover: relatedCover,
-              });
-              if (i === _related.length - 1) resolve(_related2);
-            });
-          });
-      }, 1000 * i);
-    }
-  });
-
+  
+  const related = await scrapRelatedAnimes(page, _related);
   anime.related = <any[]>await related;
-
+  //console.log(related);
   const banner = `${config.PAGE_URL}${$("div.Bg")
     .attr("style")
     ?.split("(")[1]

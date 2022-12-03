@@ -10,27 +10,22 @@ const LastAnimeFile = join(__dirname, "..", "data", "LastAnime.json");
 
 const getOnePage = async (
   page: any,
-  pageNumber: number | string,
-  verificarDatabase?: boolean
+  pageNumber: number | string
 ): Promise<boolean | string> => {
   const results = await scrapDirectory(page, pageNumber);
 
   if (results.length === 0) return "not found animes in this page";
   return new Promise(async (resolve, reject) => {
     for (const { anime, i } of results.map((anime, i) => ({ anime, i }))) {
-      
-      
-      if (verificarDatabase) {
-        const exist = await service.getAnimeBySlug(anime?.slug!); //database.getAnimeById(animeData?.anime?.slug!);
-        if (exist) {
-          logger.info(`anime ${anime?.name} already exist`);
-          if (i === results.length - 1) return resolve(true);
+      const exist = await service.getAnimeBySlug(anime?.slug!); //database.getAnimeById(animeData?.anime?.slug!);
+      if (exist) {
+        logger.info(`anime ${anime?.name} already exist`);
+        if (i === results.length - 1) return resolve(true);
 
-          continue;
-        }
+        continue;
       }
-      
-     const animeData = await scrapAnime(page, anime.url);
+
+      const animeData = await scrapAnime(page, anime.url);
       if (!animeData) return resolve(false);
 
       const animeKey = await service.saveAnime(animeData.anime); //database.saveAnime(animeData.anime);
@@ -40,7 +35,11 @@ const getOnePage = async (
       for (const { episode, j } of animeData.episodesList
         .reverse()
         .map((episode: any, j: any) => ({ episode, j }))) {
-        const episodeData = await scrapEpisode(page, episode, animeData.anime.id);
+        const episodeData = await scrapEpisode(
+          page,
+          episode,
+          animeData.anime.id
+        );
         //await database.saveEpisode(episodeData, animeKey!);
         await service.saveEpisode(episodeData, animeKey!);
         logger.info(

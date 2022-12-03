@@ -39,12 +39,10 @@ const getAllPages = async (page: any): Promise<any> => {
       logger.info(`last anime deleted ${lastAnime}`);
     }
 
-    let verif = true;
     return new Promise(async (resolve, reject) => {
       for (let i = pages; i > 0; i--) {
         logger.info(`Scraping page ${i} of ${pages}`);
-        await getOnePage(page, i, verif);
-        verif = false;
+        await getOnePage(page, i);
         writeFileSync(FILE_PATH, JSON.stringify({ pages: i - 1 }));
         if (i === 1) {
           console.log("No more anime to scrap");
