@@ -27,13 +27,13 @@ const scrap = async (
   anime.slug = page.url().split("/").pop()!;
   anime.title = $("h1.Title").text();
 
-  anime.language="Subtitled";
+  anime.language = "Subtitled";
   if (anime.title.toLocaleLowerCase().includes("latino")) {
-    anime.language="Latino";
+    anime.language = "Latino";
   }
-  
+
   anime.alternativeTitles = <any[]>[];
-  
+
   const AlternativeTitles = $("span.TxtAlt");
   const extraInfo = await jikanMoe.getAnimeInfo(anime.title);
 
@@ -58,8 +58,6 @@ const scrap = async (
     const visible = true;
     _related.push({ slug, title, type, visible });
   });
-
-
 
   /*
   const related = new Promise(async (resolve, reject) => {
@@ -92,24 +90,28 @@ const scrap = async (
       setTimeout(async () => {
         const el = _related[i];
         logger.info(`Scraping related anime ${i + 1}/${_related.length}`);
-       await page.goto(`${config.PAGE_URL}/anime/${el.slug}`, {
-          waitUntil: "domcontentloaded",
-          timeout: 0,
-        });
-        const html2 = await page.content();
-        const $$ = load(html2);
-        const relatedCover = `${config.PAGE_URL}${$$("div.AnimeCover div figure img").attr(
-          "src"
-        )!}`;
+        page
+          .goto(`${config.PAGE_URL}/anime/${el.slug}`, {
+            waitUntil: "domcontentloaded",
+            timeout: 0,
+          })
+          .then(() => {
+            page.content().then((html2: any) => {
+              const $$ = load(html2);
+              const relatedCover = `${config.PAGE_URL}${$$(
+                "div.AnimeCover div figure img"
+              ).attr("src")!}`;
 
-        _related2.push({
-          slug: el.slug,
-          title: el.title,
-          type: el.type,
-          visible: el.visible,
-          cover: relatedCover, 
-        });
-        if (i === _related.length - 1) resolve(_related2);
+              _related2.push({
+                slug: el.slug,
+                title: el.title,
+                type: el.type,
+                visible: el.visible,
+                cover: relatedCover,
+              });
+              if (i === _related.length - 1) resolve(_related2);
+            });
+          });
       }, 1000 * i);
     }
   });
@@ -124,15 +126,13 @@ const scrap = async (
   anime.banner = banner.includes("banners/3690.jpg")
     ? extraInfo?.images?.jpg?.large_image_url
     : banner; //await uploadImage(banner, extraInfo?.images?.jpg?.large_image_url, "banner");
-    if(!anime.banner) anime.banner = 'https://i.ibb.co/55sJ2XR/Banner.png';
+  if (!anime.banner) anime.banner = "https://i.ibb.co/55sJ2XR/Banner.png";
   const genres = $("nav.Nvgnrs a");
   anime.genres = genres
     .map((i, el) => {
       return $(el).text();
     })
     .get();
-
-
 
   anime.synopsis = $("div.Description p").text();
 
@@ -146,8 +146,10 @@ const scrap = async (
   let anime_info = $(scripts)
     .text()
     .match(/var anime_info = (.*);/)![0]
-    .split("var anime_info = [")[1].split("];")[0].split(",");
- 
+    .split("var anime_info = [")[1]
+    .split("];")[0]
+    .split(",");
+
   const id = anime_info[0].replace(/"/g, "");
   anime.id = id;
   const epsList = $(scripts)
