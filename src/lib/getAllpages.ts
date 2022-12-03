@@ -35,7 +35,8 @@ const getAllPages = async (page: any): Promise<any> => {
     if (existsSync(LastAnimeFile))
       lastAnime = JSON.parse(readFileSync(LastAnimeFile).toString()).lastAnime;
     if (lastAnime !== "") {
-      service.deleteAnime(lastAnime);
+      //service.deleteAnime(lastAnime);
+      service.deleteLastAnime();
       logger.info(`last anime deleted ${lastAnime}`);
     }
 

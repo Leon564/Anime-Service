@@ -19,3 +19,6 @@ src/db/animedeus-v2-firebase-adminsdk-gx4kk-9b9ed44366.json
 
 #cache files
 .cache
+
+#test files
+test.ts

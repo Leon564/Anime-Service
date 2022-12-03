@@ -18,9 +18,7 @@ const scrapRelatedAnimeCover = async (slug: string, page:any) => {
 }
 
 const scrapRelatedAnimes = async (page: any, related: any) => {
-    logger.info("Scraping related animes...");
   return new Promise(async (resolve, reject) => {
-    logger.info(`Scraping related anime ${related.length}`);
     let _related: any[] = [];
     if (related.length === 0) resolve(_related);
     for (let i = 0; i < related.length; i++) {

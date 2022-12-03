@@ -54,6 +54,28 @@ class Service {
       return false;
     }
   }
+  async deleteLastAnime() {
+    try {
+      const responseAnime = await axios.get(`${API_URL}/animes/directory`);
+      const animeData = responseAnime.data;
+      if (responseAnime.status === 200) {
+        if (animeData.animes.length === 0) return true;
+        const response = await axios.delete(
+          `${API_URL}/animes/${
+            animeData.animes[0].slug
+          }`
+        );
+        if (response.status === 200) {
+          return true;
+        }
+        return false;
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async getEpisodeBySlug(slug: string, episode: number) {
     try {
       const response = await axios.get(
