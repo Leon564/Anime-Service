@@ -82,7 +82,7 @@ const scrap = async (
     }
   });
   */
-  
+
   const related = await scrapRelatedAnimes(page, _related);
   anime.related = <any[]>await related;
   //console.log(related);
@@ -111,24 +111,14 @@ const scrap = async (
     });
   if (!scripts) return null;
 
-  let anime_info = $(scripts)
-    .text()
-    .match(/var anime_info = (.*);/)![0]
-    .split("var anime_info = [")[1]
-    .split("];")[0]
-    .split(",");
+  anime.id = await (await page.evaluate("anime_info"))[0];
 
-  const id = anime_info[0].replace(/"/g, "");
-  anime.id = id;
-  const epsList = $(scripts)
-    .text()
-    .match(/var episodes = (.*);/)![0]
-    .split(" = ")[1]
-    .slice(0, -1);
-
-  const episodesList = JSON.parse(epsList).map((e: any) => {
-    return `${config.PAGE_URL}/ver/${anime.slug}-${e.toString().split(",")[0]}`;
+  const episodesList = await (
+    await page.evaluate("episodes")
+  ).map(([number, id]: any) => {
+    return `${config.PAGE_URL}/ver/${anime.slug}-${number}`;
   });
+
   if (!anime.title || anime.title == "") return null;
 
   return { anime, episodesList };
