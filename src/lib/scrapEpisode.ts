@@ -18,7 +18,7 @@ const scrap = async (
   const $ = load(html);
 
   const title = $("h1.Title").text();
-  const episodeNumber = parseInt(page.url().split("-").pop()!);
+  const episodeNumber = parseFloat(page.url().split("-").pop()!);
   let servers: Server[] = [];
   const scripts = $("script")
     .toArray()
