@@ -26,7 +26,7 @@ const getOnePage = async (
       }
 
       const animeData = await scrapAnime(page, anime.url);
-      if (!animeData) return resolve(false);
+      if (!animeData) continue;
 
       const animeKey = await service.saveAnime(animeData.anime); //database.saveAnime(animeData.anime);
       logger.info(`anime ${anime.name} saved`);
