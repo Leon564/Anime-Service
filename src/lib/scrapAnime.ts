@@ -83,8 +83,6 @@ const scrap = async (
   });
   */
 
-  const related = await scrapRelatedAnimes(page, _related);
-  anime.related = <any[]>await related;
   //console.log(related);
   const banner = `${config.PAGE_URL}${$("div.Bg")
     .attr("style")
@@ -118,6 +116,9 @@ const scrap = async (
   ).map(([number, id]: any) => {
     return `${config.PAGE_URL}/ver/${anime.slug}-${number}`;
   });
+
+  const related = await scrapRelatedAnimes(page, _related);
+  anime.related = <any[]>await related;
 
   if (!anime.title || anime.title == "") return null;
 
