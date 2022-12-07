@@ -14,8 +14,7 @@ class jikanMoe {
       }
       return false;
     });
-    console.log(anime);
-
+    
     return anime || null;
   };
 }
