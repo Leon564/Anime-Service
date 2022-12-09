@@ -61,10 +61,10 @@ const scrap = async (
   });
   const _state = $("p.AnmStts").text();
   const _status = _state.trim();
-
-  if (_status === "EN EMISION") anime.status = "Currently Airing";
-  else if (_status === "FINALIZADO") anime.status = "Finished Airing";
-  else if (_status === "PROXIMAMENTE") anime.status = "Not yet aired";
+  console.log(_status);
+  if (_status === "En emision") anime.status = "Currently Airing";
+  else if (_status === "Finalizado") anime.status = "Finished Airing";
+  else if (_status === "Proximamente") anime.status = "Not yet aired";
    
   /*
   const related = new Promise(async (resolve, reject) => {
