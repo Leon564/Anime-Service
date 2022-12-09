@@ -60,7 +60,12 @@ const scrap = async (
     _related.push({ slug, title, type, visible });
   });
   const _state = $("p.AnmStts").text();
-  anime.status = _state.trim();
+  const _status = _state.trim();
+
+  if (_status === "EN EMISION") anime.status = "Currently Airing";
+  else if (_status === "FINALIZADO") anime.status = "Finished Airing";
+  else if (_status === "PROXIMAMENTE") anime.status = "Not yet aired";
+   
   /*
   const related = new Promise(async (resolve, reject) => {
     logger.info(`Scraping related anime ${_related.length}`);
