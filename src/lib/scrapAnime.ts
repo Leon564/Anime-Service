@@ -59,7 +59,8 @@ const scrap = async (
     const visible = true;
     _related.push({ slug, title, type, visible });
   });
-
+  const _state = $("p.AnmStts").text();
+  anime.status = _state.trim();
   /*
   const related = new Promise(async (resolve, reject) => {
     logger.info(`Scraping related anime ${_related.length}`);

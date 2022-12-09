@@ -11,6 +11,7 @@ type Anime = {
   synopsis: string;
   language: string;
   slug: string;
+  status: string;
   related: any[];
   visible: boolean;
 };
