@@ -14,8 +14,8 @@ const main = async () => {
   const page = await browser.newPage();
 
   process.stdout.write("\u001b[2J\u001b[0;0H");
-  if (args.toLowerCase().includes("allscraping")) {
-    if (args.toLowerCase().includes("--restart")) {
+  if (args.toLowerCase().includes("allscraping") || args.toLowerCase().includes("-a")) {
+    if (args.toLowerCase().includes("--restart") || args.toLowerCase().includes("-r")) {
       if (existsSync(AllScrapProgress)) unlinkSync(AllScrapProgress);
       if (existsSync(Scrap_Complete)) unlinkSync(Scrap_Complete);
       if (existsSync(LastAnimeFile)) unlinkSync(LastAnimeFile);

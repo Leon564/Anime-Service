@@ -26,7 +26,13 @@ const getOnePage = async (
       }
 
       const animeData = await scrapAnime(page, anime.url);
-      if (!animeData) continue;
+      if(anime.slug === "tegami-bachi") console.log({ animeData:!!animeData});
+      if (!animeData) {
+        logger.error(`anime ${anime.name} not found`);
+        if (i === results.length - 1) return resolve(true);
+
+        continue;
+      }
 
       const animeKey = await service.saveAnime(animeData.anime); //database.saveAnime(animeData.anime);
       logger.info(`anime ${anime.name} saved`);
