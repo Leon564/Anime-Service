@@ -12,7 +12,7 @@ export default {
     puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       ignoreDefaultArgs: ["--disable-extensions"],
       args: [
         "--no-sandbox",
